@@ -9,13 +9,6 @@
 
 //	STRUCTS
 
-//	Main Struct
-typedef struct	s_cub
-{
-	char		*argv;
-	t_mapconf	mapconf;
-}	t_cub;
-
 //	Map Struct
 typedef struct	s_mapconf
 {
@@ -25,7 +18,14 @@ typedef struct	s_mapconf
 	char	*ea;
 	int		f;
 	int		c;
-	char	**map;
+	char	*tmp_map;
 }	t_mapconf;
+
+//	Main Struct
+typedef struct	s_cub
+{
+	char		*argv;
+	t_mapconf	mapconf;
+}	t_cub;
 
 #endif

@@ -1,29 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_isdigit.c                                       :+:      :+:    :+:   */
+/*   ft_strcmp.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ruida-si <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: ruida-si <ruida-si@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/18 11:22:17 by ruida-si          #+#    #+#             */
-/*   Updated: 2024/10/18 11:22:21 by ruida-si         ###   ########.fr       */
+/*   Created: 2025/04/07 17:22:21 by gribeiro          #+#    #+#             */
+/*   Updated: 2025/04/09 18:30:36 by ruida-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-int	ft_isdigit(int c)
-{
-	if (c >= '0' && c <= '9')
-		return (1);
-	else
-		return (0);
-}
-/*
-#include <stdio.h>
-#include <ctype.h>
+#include "libft.h"
 
-int main()
+int	ft_strcmp(char *s1, char *s2)
 {
-	printf("%i\n", ft_isdigit(50));
-	printf("%i\n", ft_isdigit(48));
+	int	i;
+
+	i = 0;
+	while (s1[i] && s2[i] && s1[i] == s2[i])
+		i++;
+	return (s1[i] - s2[i]);
 }
-*/
