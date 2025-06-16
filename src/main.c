@@ -6,7 +6,7 @@
 /*   By: gribeiro <gribeiro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 22:10:47 by gribeiro          #+#    #+#             */
-/*   Updated: 2025/06/11 17:47:48 by gribeiro         ###   ########.fr       */
+/*   Updated: 2025/06/16 18:15:59 by gribeiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ int	get_color(char *file, char *place, int *params);
 int	extract_color(char *file, int i, int *j);
 char	*get_map(char *file);
 int	parse_map(t_cub *cub);
+int	check_textures(t_cub *cub);
 
 int	main(int argc, char **argv)
 {
@@ -61,9 +62,10 @@ int	checkmap(t_cub *cub, char **argv)
 	if (fd < 0)
 		return (write(2, "Error\nInvalid Map\n", 18), -1);
 	if (readmap(cub, fd) == -1)
-		return (-1);
+		return (-1);//dar free struct
+		//verificar se ficaram caracteres por apagar
 	if (parse_map(cub) == -1)
-		return(1);
+		return(-1);//dar free struct
 	return (0);
 }
 
@@ -101,21 +103,19 @@ int	fillmap(t_cub *cub, char *file)
 	int	params;
 
 	params = 0;
-	printf ("%s\n\n", file);
 	cub->mapconf.no = get_texture(file, "NO", &params);
 	cub->mapconf.so = get_texture(file, "SO", &params);
 	cub->mapconf.we = get_texture(file, "WE", &params);
 	cub->mapconf.ea = get_texture(file, "EA", &params);
 	cub->mapconf.f = get_color(file, "F", &params);
 	if (cub->mapconf.f == -1)
-		return (write(2, "Error\nInvalid map\n", 18), -1);
+		return (write(2, "Error\nInvalid RGB color\n", 25), -1);
 	cub->mapconf.c = get_color(file, "C", &params);
 	if (cub->mapconf.c == -1)
-		return (write(2, "Error\nInvalid map\n", 18), -1);
+		return (write(2, "Error\nInvalid RGB color\n", 25), -1);
 	if (params != 6)
-		return (write(2, "Error\nInvalid map\n", 18), -1);
+		return (write(2, "Error\nInvalid map settings\n", 27), -1);
 	cub->mapconf.tmp_map = get_map(file);
-	printf ("%s\n\n", file);
 	return (0);
 }
 
@@ -202,7 +202,7 @@ int	extract_color(char *file, int i, int *j)
 	while (file[i] && (file[i] >= '0' && file[i] <= '9'))
 		b = b * 10 + (file[i++] - '0');
 	*j = i;
-	if (r > 255 || g > 255 | b > 255)
+	if ((r > 255 || g > 255 || b > 255) || (r < 0 || g < 0 || b < 0))
 		return (-1);
 	return ((r << 16) | (g << 8) | b);
 }
@@ -236,7 +236,72 @@ char	*get_map(char *file)
 
 int	parse_map(t_cub *cub)
 {
-	(void)cub;
+	if (check_textures(cub) == -1)
+		return (write(2, "Error\nInvalid textures\n", 23), -1);
+	cub->mapconf.map = finalmap(cub);
+	if (!cub->mapconf.map == NULL)
+		return (write(2, "Error\nInvalid map\n", 18), -1);
 	return (0);
 	return (-1);
+}
+
+char	**finalmap(t_cub *cub)
+{
+	int	i;
+	int	col;
+	int	lns;
+
+	mapsize (cub, &col, &lns);
+	if (col < 3 || lns < 3)
+		return (NULL);
+	cub->map.map = malloc (lns * sizeof(char *));
+	if (!cub->map.map)
+		return (NULL);
+	//loop para preenchar mapa
+}
+
+void	mapsize(t_cub *cub, int *col, int *lns)
+{
+	int	i;
+	int	max_col;
+
+	i = 0;
+	max_col = 0;
+	*col = 0;
+	*lns = 0;
+	while (cub->mapconf.tmp_map[i] && cub->mapconf.tmp_map[i] == '\n')
+		i++;
+	while (cub->mapconf.tmp_map[i])
+	{
+		while (cub->mapconf.tmp_map[i] && cub->mapconf.tmp_map[i] != '\n')
+		{
+			(*col)++;
+			i++;
+		}
+		if (cub->mapconf.tmp_map[i] == '\n' && cub->mapconf.tmp_map[i - 1] != '\n')
+			(*lns)++;
+		if (col >= max_col)
+			max_col = col;
+		i++;
+	}
+	*col = max_col;
+}
+
+int	check_textures(t_cub *cub)
+{
+	
+	cub->map.no_fd = open(cub->mapconf.no, O_RDONLY);
+	if (cub->map.no_fd < 0)
+		return (-1);
+	cub->map.so_fd = open(cub->mapconf.so, O_RDONLY);
+	if (cub->map.so_fd < 0)
+		return (close (cub->map.no_fd), -1);
+	cub->map.ea_fd = open(cub->mapconf.ea, O_RDONLY);
+	if (cub->map.ea_fd < 0)
+		return (close (cub->map.no_fd), close (cub->map.so_fd), -1);
+	cub->map.we_fd = open(cub->mapconf.we, O_RDONLY);
+	if (cub->map.ea_fd < 0)
+		return (close (cub->map.no_fd), close (cub->map.so_fd), 
+				close (cub->map.ea_fd), -1);
+	return (0);
 }

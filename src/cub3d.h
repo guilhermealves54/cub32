@@ -10,6 +10,18 @@
 //	STRUCTS
 
 //	Map Struct
+typedef struct	s_map
+{
+	int		no_fd;
+	int		so_fd;
+	int		we_fd;
+	int		ea_fd;
+	int		f;
+	int		c;
+	char	**map;
+	//FDs NAO SAO NECESSARIOS - MAPA COMO ARRAY DE INT - PASSAR COORDENADA DE PLAYER + ANGULO
+}	t_map;
+
 typedef struct	s_mapconf
 {
 	char	*no;
@@ -19,12 +31,13 @@ typedef struct	s_mapconf
 	int		f;
 	int		c;
 	char	*tmp_map;
+	char	**map;
 }	t_mapconf;
 
 //	Main Struct
 typedef struct	s_cub
 {
-	char		*argv;
+	t_map		map;
 	t_mapconf	mapconf;
 }	t_cub;
 
