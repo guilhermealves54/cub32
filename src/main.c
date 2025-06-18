@@ -6,7 +6,7 @@
 /*   By: gribeiro <gribeiro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 22:10:47 by gribeiro          #+#    #+#             */
-/*   Updated: 2025/06/16 18:15:59 by gribeiro         ###   ########.fr       */
+/*   Updated: 2025/06/18 16:57:33 by gribeiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 int	cubinit(t_cub *cub, char **argv);
 int	checkmap(t_cub *cub, char **argv);
 int	readmap(t_cub *cub, int fd);
+int	chk_remain(t_cub *cub);
 int	fillmap(t_cub *cub, char *file);
 char	*get_texture(char *file, char *texture, int *params);
 int	get_color(char *file, char *place, int *params);
@@ -60,12 +61,29 @@ int	checkmap(t_cub *cub, char **argv)
 		return (write(2, "Error\nInvalid Map\n", 18), -1);
 	fd = open (argv[1], O_RDONLY);
 	if (fd < 0)
-		return (write(2, "Error\nInvalid Map\n", 18), -1);
+		return (close (fd), write(2, "Error\nInvalid Map\n", 18), -1);
 	if (readmap(cub, fd) == -1)
-		return (-1);//dar free struct
-		//verificar se ficaram caracteres por apagar
+		return (close (fd), -1);//dar free struct
+	close (fd);
+	if (chk_remain (cub) == -1)
+		return (write(2, "Error\nInvalid Map\n", 18), -1);//dar free struct
 	if (parse_map(cub) == -1)
-		return(-1);//dar free struct
+		return(write(2, "Error\nInvalid Map\n", 18), -1);//dar free struct
+	return (0);
+}
+
+int	chk_remain(t_cub *cub)
+{
+	int	i;
+
+	i = 0;
+	while (cub->mapconf.tmp_map[i])
+	{
+		if (cub->mapconf.tmp_map[i] != ' ' && cub->mapconf.tmp_map[i] != '\t' 
+			&& cub->mapconf.tmp_map[i] != '\n' && cub->mapconf.tmp_map[i] != '#')
+			return (-1);
+		i++;
+	}
 	return (0);
 }
 
@@ -91,11 +109,9 @@ int	readmap(t_cub *cub, int fd)
 			return (free (temp), write(2, "Error\nMemmory Error\n", 20), -1);
 		free (temp);
 	}
-	close (fd);
 	if (fillmap(cub, file) == -1)
 		return (free(file), -1);
-	free(file);
-	return (0);
+	return (free(file), 0);
 }
 
 int	fillmap(t_cub *cub, char *file)
@@ -254,10 +270,86 @@ char	**finalmap(t_cub *cub)
 	mapsize (cub, &col, &lns);
 	if (col < 3 || lns < 3)
 		return (NULL);
-	cub->map.map = malloc (lns * sizeof(char *));
+	cub->map.map = ft_calloc (lns, sizeof(char *));
 	if (!cub->map.map)
 		return (NULL);
-	//loop para preenchar mapa
+	cub->map.map[lns] = NULL;
+	i = 0;
+	while (i < lns)
+	{
+		cub->map.map[i] = ft_calloc (col, sizeof(char));
+		if (!cub->map.map[i])
+			return (NULL);//limpar mem array
+	}
+	if (fill_final_map(cub, col, lns) == -1)
+		return (NULL);
+	return (cub->map.map);
+}
+
+int	fill_final_map(t_cub *cub, int col, int lns)
+{
+	int	i;
+	int	j;
+	int n;
+	int	tab;
+
+	i = 0;
+	n = 0;
+	while(i < lns)
+	{
+		j = 0;
+		while (j < col)
+		{
+			if (cub->mapconf.tmp_map[n] == '\t')
+			{
+				tab = 0;
+				while (tab < 4)
+				{
+					cub->map.map[i][j] = ' ';
+					tab++;
+					j++;
+				}
+				n++;
+			}
+			else if (cub->mapconf.tmp_map[n] == ' ')
+			{
+				cub->map.map[i][j] = ' ';
+				j++;
+				n++;
+			}
+			else if (cub->mapconf.tmp_map[n] == '1')
+			{
+				cub->map.map[i][j] = '1';
+				j++;
+				n++;
+			}
+			else if (cub->mapconf.tmp_map[n] == '0')
+			{
+				cub->map.map[i][j] = '0';
+				j++;
+				n++;
+			}
+			else if (cub->mapconf.tmp_map[n] == 'N'
+					|| cub->mapconf.tmp_map[n] == 'S'
+					|| cub->mapconf.tmp_map[n] == 'E'
+					|| cub->mapconf.tmp_map[n] == 'W')
+			{
+				cub->map.map[i][j] = '0';
+				set_pl_start (cub, i, j, cub->mapconf.tmp_map[n]);
+				j++;
+				n++;
+			}
+			else if (cub->mapconf.tmp_map[n] == '\n')
+			{
+				n++;
+				break ;
+			}
+			else
+				return (-1);
+		}
+		i++;
+	}
+	return (0);
 }
 
 void	mapsize(t_cub *cub, int *col, int *lns)
@@ -275,10 +367,14 @@ void	mapsize(t_cub *cub, int *col, int *lns)
 	{
 		while (cub->mapconf.tmp_map[i] && cub->mapconf.tmp_map[i] != '\n')
 		{
-			(*col)++;
+			if (cub->mapconf.tmp_map[i] == '\t')
+				*col += 4;
+			else
+				(*col)++;
 			i++;
 		}
-		if (cub->mapconf.tmp_map[i] == '\n' && cub->mapconf.tmp_map[i - 1] != '\n')
+		if (cub->mapconf.tmp_map[i] == '\n'
+			&& cub->mapconf.tmp_map[i - 1] != '\n')
 			(*lns)++;
 		if (col >= max_col)
 			max_col = col;
@@ -289,19 +385,23 @@ void	mapsize(t_cub *cub, int *col, int *lns)
 
 int	check_textures(t_cub *cub)
 {
-	
-	cub->map.no_fd = open(cub->mapconf.no, O_RDONLY);
-	if (cub->map.no_fd < 0)
+	int		no_fd;
+	int		so_fd;
+	int		we_fd;
+	int		ea_fd;
+
+	no_fd = open(cub->mapconf.no, O_RDONLY);
+	if (no_fd < 0)
 		return (-1);
-	cub->map.so_fd = open(cub->mapconf.so, O_RDONLY);
-	if (cub->map.so_fd < 0)
-		return (close (cub->map.no_fd), -1);
-	cub->map.ea_fd = open(cub->mapconf.ea, O_RDONLY);
-	if (cub->map.ea_fd < 0)
-		return (close (cub->map.no_fd), close (cub->map.so_fd), -1);
-	cub->map.we_fd = open(cub->mapconf.we, O_RDONLY);
-	if (cub->map.ea_fd < 0)
-		return (close (cub->map.no_fd), close (cub->map.so_fd), 
-				close (cub->map.ea_fd), -1);
-	return (0);
+	so_fd = open(cub->mapconf.so, O_RDONLY);
+	if (so_fd < 0)
+		return (close (no_fd), -1);
+	ea_fd = open(cub->mapconf.ea, O_RDONLY);
+	if (ea_fd < 0)
+		return (close (no_fd), close (so_fd), -1);
+	we_fd = open(cub->mapconf.we, O_RDONLY);
+	if (we_fd < 0)
+		return (close (no_fd), close (so_fd), 
+				close (ea_fd), -1);
+	return (close (no_fd), close (so_fd), close (ea_fd), close (we_fd), 0);
 }

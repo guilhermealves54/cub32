@@ -12,10 +12,7 @@
 //	Map Struct
 typedef struct	s_map
 {
-	int		no_fd;
-	int		so_fd;
-	int		we_fd;
-	int		ea_fd;
+
 	int		f;
 	int		c;
 	char	**map;
