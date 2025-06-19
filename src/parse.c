@@ -6,7 +6,7 @@
 /*   By: gribeiro <gribeiro@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 17:34:53 by gribeiro          #+#    #+#             */
-/*   Updated: 2025/06/19 23:09:11 by gribeiro         ###   ########.fr       */
+/*   Updated: 2025/06/19 23:13:53 by gribeiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,10 +18,8 @@ static char	*get_map(char *file);
 
 int	cubparse(t_cub *cub, int argc, char **argv)
 {
-	int	i;
 	int	fd;
 
-	i = 0;
 	if (argc != 2)
 		return (write(2, "Error\nInvalid Arguments\n", 25), -1);
 	if (!argv[1])

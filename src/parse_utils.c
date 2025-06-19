@@ -6,13 +6,13 @@
 /*   By: gribeiro <gribeiro@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 17:39:45 by gribeiro          #+#    #+#             */
-/*   Updated: 2025/06/19 23:06:54 by gribeiro         ###   ########.fr       */
+/*   Updated: 2025/06/19 23:24:21 by gribeiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
 
-int		get_color(char *file, char *place, int *params, int i_bk);
+int		get_color(char *file, char *place, int *params);
 int		extract_color(char *file, int i, int *j);
 void	clean_text(char *file, int i, int j);
 int		chk_remain(t_cub *cub);

@@ -6,7 +6,7 @@
 /*   By: gribeiro <gribeiro@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 17:58:52 by gribeiro          #+#    #+#             */
-/*   Updated: 2025/06/19 23:07:51 by gribeiro         ###   ########.fr       */
+/*   Updated: 2025/06/19 23:23:22 by gribeiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,20 +44,20 @@ int	fill_final_map(t_cub *cub, int col, int lns)
 
 static int	fill_loop(t_cub *cub, int *n, int *i, int *j)
 {
-	if (cub->mapset.tmp_map[n] == '\t'
-		|| cub->mapset.tmp_map[n] == ' ')
-		return (fill_void (cub, &n, &i, &j));
-	else if (cub->mapset.tmp_map[n] == '1'
-		|| cub->mapset.tmp_map[n] == '0')
-		return (fill_space (cub, &n, &i, &j));
-	else if (cub->mapset.tmp_map[n] == 'N'
-		|| cub->mapset.tmp_map[n] == 'S'
-		|| cub->mapset.tmp_map[n] == 'E'
-		|| cub->mapset.tmp_map[n] == 'W')
-		return (set_pl_start (cub, &n, &i, &j));
-	else if (cub->mapset.tmp_map[n] == '\n')
+	if (cub->mapset.tmp_map[*n] == '\t'
+		|| cub->mapset.tmp_map[*n] == ' ')
+		return (fill_void (cub, n, i, j));
+	else if (cub->mapset.tmp_map[*n] == '1'
+		|| cub->mapset.tmp_map[*n] == '0')
+		return (fill_space (cub, n, i, j));
+	else if (cub->mapset.tmp_map[*n] == 'N'
+		|| cub->mapset.tmp_map[*n] == 'S'
+		|| cub->mapset.tmp_map[*n] == 'E'
+		|| cub->mapset.tmp_map[*n] == 'W')
+		return (set_pl_start (cub, n, i, j));
+	else if (cub->mapset.tmp_map[*n] == '\n')
 	{
-		n++;
+		(*n)++;
 		return (1);
 	}
 	else
@@ -115,8 +115,8 @@ static int	set_pl_start(t_cub *cub, int *n, int *i, int *j)
 		cub->map.str_angle = 0;
 	if (cub->mapset.tmp_map[*n] == 'W')
 		cub->map.str_angle = 180;
-	cub->map.str_pos[0] = i;
-	cub->map.str_pos[1] = j;
+	cub->map.str_pos[0] = *i;
+	cub->map.str_pos[1] = *j;
 	cub->map.map[*i][*j] = '0';
 	(*j)++;
 	(*n)++;

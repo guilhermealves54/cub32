@@ -13,7 +13,8 @@
 NAME = cub3D
 
 # Srcs
-SRCS = src/main.c
+SRCS = src/main.c src/parse.c src/parse_map.c src/fill_map.c \
+	src/parse_utils.c src/parse_utils2.c src/memclean.c
 OBJS = $(SRCS:.c=.o)
 
 # Compiler
