@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gribeiro <gribeiro@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: gribeiro <gribeiro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 19:31:06 by gribeiro          #+#    #+#             */
-/*   Updated: 2025/06/19 19:32:58 by gribeiro         ###   ########.fr       */
+/*   Updated: 2025/06/20 15:49:28 by gribeiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ char	*get_texture(char *file, char *texture, int *params, int i_bk);
 int		get_color(char *file, char *place, int *params);
 int		extract_color(char *file, int i, int *j);
 void	clean_text(char *file, int i, int j);
-int		chk_remain(t_cub *cub);
+int		chk_remain(char *file);
 void	mapsize(t_cub *cub);
 
 //	Memory Cleanup

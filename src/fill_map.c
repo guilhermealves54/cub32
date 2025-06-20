@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   fill_map.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gribeiro <gribeiro@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: gribeiro <gribeiro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 17:58:52 by gribeiro          #+#    #+#             */
-/*   Updated: 2025/06/19 23:23:22 by gribeiro         ###   ########.fr       */
+/*   Updated: 2025/06/20 17:14:25 by gribeiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,6 @@ int	fill_final_map(t_cub *cub, int col, int lns)
 			else if (status == 1)
 				break ;
 		}
-		i++;
 	}
 	return (0);
 }
@@ -58,6 +57,7 @@ static int	fill_loop(t_cub *cub, int *n, int *i, int *j)
 	else if (cub->mapset.tmp_map[*n] == '\n')
 	{
 		(*n)++;
+		(*i)++;
 		return (1);
 	}
 	else

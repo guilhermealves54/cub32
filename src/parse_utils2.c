@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_utils2.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gribeiro <gribeiro@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: gribeiro <gribeiro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 18:52:55 by gribeiro          #+#    #+#             */
-/*   Updated: 2025/06/19 19:33:32 by gribeiro         ###   ########.fr       */
+/*   Updated: 2025/06/20 16:29:20 by gribeiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,8 @@ void	mapsize(t_cub *cub)
 
 	i = 0;
 	max_col = 0;
+	cub->map.col = 0;
+	cub->map.lns = 0;
 	while (cub->mapset.tmp_map[i] && cub->mapset.tmp_map[i] == '\n')
 		i++;
 	while (cub->mapset.tmp_map[i])
@@ -36,6 +38,7 @@ void	mapsize(t_cub *cub)
 			cub->map.lns++;
 		if (cub->map.col >= max_col)
 			max_col = cub->map.col;
+		cub->map.col = 0;
 		i++;
 	}
 	cub->map.col = max_col;

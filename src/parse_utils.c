@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gribeiro <gribeiro@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: gribeiro <gribeiro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 17:39:45 by gribeiro          #+#    #+#             */
-/*   Updated: 2025/06/19 23:24:21 by gribeiro         ###   ########.fr       */
+/*   Updated: 2025/06/20 15:50:30 by gribeiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 int		get_color(char *file, char *place, int *params);
 int		extract_color(char *file, int i, int *j);
 void	clean_text(char *file, int i, int j);
-int		chk_remain(t_cub *cub);
+int		chk_remain(char *file);
 
 char	*get_texture(char *file, char *texture, int *params, int i_bk)
 {
@@ -103,15 +103,15 @@ void	clean_text(char *file, int i, int j)
 		file[i++] = '#';
 }
 
-int	chk_remain(t_cub *cub)
+int	chk_remain(char *file)
 {
 	int	i;
 
 	i = 0;
-	while (cub->mapset.tmp_map[i])
+	while (file[i])
 	{
-		if (cub->mapset.tmp_map[i] != ' ' && cub->mapset.tmp_map[i] != '\t'
-			&& cub->mapset.tmp_map[i] != '\n' && cub->mapset.tmp_map[i] != '#')
+		if (file[i] != ' ' && file[i] != '\t'
+			&& file[i] != '\n' && file[i] != '#')
 			return (-1);
 		i++;
 	}

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_map.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gribeiro <gribeiro@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: gribeiro <gribeiro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 17:48:24 by gribeiro          #+#    #+#             */
-/*   Updated: 2025/06/19 23:20:15 by gribeiro         ###   ########.fr       */
+/*   Updated: 2025/06/20 17:14:07 by gribeiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,8 @@
 static int	check_textures(t_cub *cub);
 static char	**finalmap(t_cub *cub);
 static int	chk_closedmap(t_cub *cub);
-static int	search_elem(t_cub *cub, int *i, int *j);
+static int	search_row(t_cub *cub, int *i, int *j);
+static int	search_col(t_cub *cub, int *i, int *j);
 
 int	parse_map(t_cub *cub)
 {
@@ -56,20 +57,21 @@ char	**finalmap(t_cub *cub)
 {
 	int	i;
 
-	mapsize (cub);
+	mapsize(cub);
 	if (cub->map.col < 3 || cub->map.lns < 3)
 		return (NULL);
-	cub->map.map = ft_calloc (cub->map.lns, sizeof(char *));
+	cub->map.map = ft_calloc (cub->map.lns + 1, sizeof(char *));
 	if (!cub->map.map)
 		return (NULL);
 	cub->map.map[cub->map.lns] = NULL;
 	i = 0;
 	while (i < cub->map.lns)
 	{
-		cub->map.map[i] = ft_calloc (cub->map.col, sizeof(char));
+		cub->map.map[i] = ft_calloc (cub->map.col + 1, sizeof(char));
 		if (!cub->map.map[i])
 			return (cln_maparr(cub), NULL);
 		cub->map.map[i][cub->map.col] = '\0';
+		i++;
 	}
 	if (fill_final_map(cub, cub->map.col, cub->map.lns) == -1)
 		return (cln_maparr(cub), NULL);
@@ -83,29 +85,62 @@ int	chk_closedmap(t_cub *cub)
 
 	i = 0;
 	while (i < cub->map.lns)
-		if (search_elem(cub, &i, &j) == -1)
+	{
+		if (search_row(cub, &i, &j) == -1)
 			return (-1);
+	}
 	j = 0;
 	while (j < cub->map.col)
-		if (search_elem(cub, &j, &i) == -1)
+	{
+		if (search_col(cub, &i, &j) == -1)
 			return (-1);
+	}
 	return (0);
 }
 
-static int	search_elem(t_cub *cub, int *i, int *j)
+static int	search_row(t_cub *cub, int *i, int *j)
 {
 	char	fst_elem;
 	char	lst_elem;
 
 	*j = 0;
+	fst_elem = 0;
+	lst_elem = 0;
 	while (cub->map.map[*i][*j] == ' ')
 		(*j)++;
 	fst_elem = cub->map.map[*i][*j];
 	while (cub->map.map[*i][*j] == '1' || cub->map.map[*i][*j] == '0')
 		(*j)++;
-	lst_elem = cub->map.map[*i][*j - 1];
+	if (*j > 0)
+		lst_elem = cub->map.map[*i][*j - 1];
+	else
+		lst_elem = cub->map.map[*i][*j];
 	if (fst_elem != '1' || lst_elem != '1')
 		return (-1);
 	(*i)++;
+	return (0);
+}
+
+static int	search_col(t_cub *cub, int *i, int *j)
+{
+	char	fst_elem;
+	char	lst_elem;
+
+	*i = 0;
+	fst_elem = 0;
+	lst_elem = 0;
+	while (*i < cub->map.lns && cub->map.map[*i][*j] == ' ')
+		(*i)++;
+	fst_elem = cub->map.map[*i][*j];
+	while (*i < cub->map.lns && (cub->map.map[*i][*j] == '1'
+		|| cub->map.map[*i][*j] == '0'))
+		(*i)++;
+	if (*i > 0)
+		lst_elem = cub->map.map[*i - 1][*j];
+	else
+		lst_elem = cub->map.map[*i][*j];
+	if (fst_elem != '1' || lst_elem != '1')
+		return (-1);
+	(*j)++;
 	return (0);
 }
