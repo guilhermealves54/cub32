@@ -6,7 +6,7 @@
 /*   By: gribeiro <gribeiro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 22:10:47 by gribeiro          #+#    #+#             */
-/*   Updated: 2025/06/20 17:23:56 by gribeiro         ###   ########.fr       */
+/*   Updated: 2025/06/20 18:22:40 by gribeiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,4 +34,6 @@ int	main(int argc, char **argv)
 	while (cub.map.map[i])
 		printf ("%s\n", cub.map.map[i++]);
 	printf ("\n---\n");
+	cln_conf(&cub, 0);
+	cln_maparr(&cub);
 }
