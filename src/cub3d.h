@@ -6,7 +6,7 @@
 /*   By: gribeiro <gribeiro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 19:31:06 by gribeiro          #+#    #+#             */
-/*   Updated: 2025/06/20 15:49:28 by gribeiro         ###   ########.fr       */
+/*   Updated: 2025/06/26 14:59:43 by gribeiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,9 @@ int		extract_color(char *file, int i, int *j);
 void	clean_text(char *file, int i, int j);
 int		chk_remain(char *file);
 void	mapsize(t_cub *cub);
+int		check_xpm_file(t_cub *cub);
+int		search_row(t_cub *cub, int i);
+int		search_col(t_cub *cub, int j);
 
 //	Memory Cleanup
 void	cln_maparr(t_cub *cub);

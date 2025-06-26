@@ -6,7 +6,7 @@
 /*   By: gribeiro <gribeiro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 17:34:53 by gribeiro          #+#    #+#             */
-/*   Updated: 2025/06/20 15:51:45 by gribeiro         ###   ########.fr       */
+/*   Updated: 2025/06/26 14:58:05 by gribeiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ int	cubparse(t_cub *cub, int argc, char **argv)
 	close (fd);
 	if (parse_map(cub) == -1)
 		return (cln_conf(cub, 1), -1);
+	free (cub->mapset.tmp_map);
 	return (0);
 }
 
@@ -63,7 +64,8 @@ static int	readmap(t_cub *cub, int fd)
 	if (fillmap(cub, file) == -1)
 		return (free(file), -1);
 	if (chk_remain (file) == -1)
-		return (write(2, "Error\nInvalid Map\n", 18), -1);
+		return (cln_conf(cub, 1), free(file),
+			write(2, "Error\nInvalid Map\n", 18), -1);
 	return (free(file), 0);
 }
 
