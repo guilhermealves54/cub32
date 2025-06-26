@@ -6,7 +6,7 @@
 /*   By: gribeiro <gribeiro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 19:31:06 by gribeiro          #+#    #+#             */
-/*   Updated: 2025/06/26 14:59:43 by gribeiro         ###   ########.fr       */
+/*   Updated: 2025/06/26 17:19:27 by gribeiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,21 +18,45 @@
 # include <stdlib.h>
 # include <stdio.h>
 # include <unistd.h>
+# include "./../minilibx-linux/mlx.h"
+# include <math.h>
+# include <X11/keysym.h>
+
+//	CONST
+
+// DIMENSIONS
+# define WIDTH 1920
+# define HEIGHT 1000
+
+// TEXTURES
+# define TEX_N 0
+# define TEX_S 1
+# define TEX_E 2
+# define TEX_W 3
+
+// WALLS HIT SIDE
+# define X 4
+# define Y 5
+
+// VARIABLES
+# define FOV 60.0
+# define SPEED 0.03
+# define ROT 1
 
 //	STRUCTS
 
 //	Map Struct
+typedef struct s_player
+{
+	double	pos_x;
+	double	pos_y;
+	double	angle;
+}	t_player;
 typedef struct s_map
 {
-	int		str_pos[2];
-	double	str_angle;
 	int		col;
 	int		lns;
 	char	**map;
-}	t_map;
-
-typedef struct s_mapset
-{
 	char	*no;
 	char	*so;
 	char	*we;
@@ -40,13 +64,60 @@ typedef struct s_mapset
 	int		f;
 	int		c;
 	char	*tmp_map;
-}	t_mapset;
+}	t_map;
+
+typedef struct s_tex
+{
+	int		*pix;
+	void	*img;
+	int		width;
+	int		height;
+	int		bpp;
+	int		size_line;
+	int		endian;
+}	t_tex;
+
+typedef struct s_keys
+{
+	int w;
+	int a;
+	int s;
+	int d;
+	int left;
+	int right;
+}	t_keys;
+
+typedef struct s_ray
+{
+	int		x;
+	int		side;
+	double	raydir_x;
+	double	raydir_y;
+	double	dist_x;
+	double	dist_y;
+	double	f_dist_x;
+	double	f_dist_y;
+	double	step_x;
+	double	step_y;
+	double	angle;
+	double	wall_dist;	
+	double	wall_x;
+}	t_ray;
 
 //	Main Struct
 typedef struct s_cub
 {
+	void		*mlx;
+	void		*win;
+	void		*img;
+	int			*img_data;
+	int			bpp;
+	int			size_line;
+	int			endian;
+	t_keys		keys;
+	t_tex		tex[4];
 	t_map		map;
-	t_mapset	mapset;
+	t_player	player;
 }	t_cub;
 
 //	FUNCS
@@ -67,8 +138,20 @@ int		check_xpm_file(t_cub *cub);
 int		search_row(t_cub *cub, int i);
 int		search_col(t_cub *cub, int j);
 
+//	Graphics
+void	init_display(t_cub *cub);
+int		game_loop(t_cub * cub);
+void	ft_draw_image(t_ray *ray, t_cub *cub, t_player *player);
+void	raycast(t_cub *cub);
+
+//	Graphics Utils
+void	load_textures(t_cub *cub);
+double	deg_to_rad(double degree);
+
 //	Memory Cleanup
 void	cln_maparr(t_cub *cub);
 void	cln_conf(t_cub *cub, int opt);
+void	mem_clean(t_cub *cub);
+void	cln_basic(t_cub *cub);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: gribeiro <gribeiro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 22:10:47 by gribeiro          #+#    #+#             */
-/*   Updated: 2025/06/26 14:57:30 by gribeiro         ###   ########.fr       */
+/*   Updated: 2025/06/26 16:48:28 by gribeiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,5 @@ int	main(int argc, char **argv)
 
 	if (cubparse(&cub, argc, argv) == -1)
 		return (1);
-	cln_conf(&cub, 0);
-	cln_maparr(&cub);
+	init_display(&cub);
 }

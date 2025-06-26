@@ -6,7 +6,7 @@
 /*   By: gribeiro <gribeiro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 17:48:24 by gribeiro          #+#    #+#             */
-/*   Updated: 2025/06/26 14:59:54 by gribeiro         ###   ########.fr       */
+/*   Updated: 2025/06/26 17:06:48 by gribeiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,16 +37,16 @@ static int	check_textures(t_cub *cub)
 
 	if (check_xpm_file(cub) == -1)
 		return (-1);
-	no_fd = open(cub->mapset.no, O_RDONLY);
+	no_fd = open(cub->map.no, O_RDONLY);
 	if (no_fd < 0)
 		return (-1);
-	so_fd = open(cub->mapset.so, O_RDONLY);
+	so_fd = open(cub->map.so, O_RDONLY);
 	if (so_fd < 0)
 		return (close (no_fd), -1);
-	ea_fd = open(cub->mapset.ea, O_RDONLY);
+	ea_fd = open(cub->map.ea, O_RDONLY);
 	if (ea_fd < 0)
 		return (close (no_fd), close (so_fd), -1);
-	we_fd = open(cub->mapset.we, O_RDONLY);
+	we_fd = open(cub->map.we, O_RDONLY);
 	if (we_fd < 0)
 		return (close (no_fd), close (so_fd),
 			close (ea_fd), -1);
@@ -58,8 +58,8 @@ char	**finalmap(t_cub *cub)
 	int	i;
 
 	mapsize(cub);
-	if (cub->map.col < 3 || cub->map.lns < 3)
-		return (NULL);
+/* 	if (cub->map.col < 2 || cub->map.lns < 2)
+		return (NULL); */
 	cub->map.map = ft_calloc (cub->map.lns + 1, sizeof(char *));
 	if (!cub->map.map)
 		return (NULL);

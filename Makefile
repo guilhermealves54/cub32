@@ -14,7 +14,8 @@ NAME = cub3D
 
 # Srcs
 SRCS = src/main.c src/parse.c src/parse_map.c src/fill_map.c \
-	src/parse_utils.c src/parse_utils2.c src/memclean.c
+	src/parse_utils.c src/parse_utils2.c src/memclean.c \
+	src/init.c src/raycast.c src/draw_image.c src/game_loop.c
 OBJS = $(SRCS:.c=.o)
 
 # Compiler
@@ -22,6 +23,7 @@ CC = cc
 CFLAGS = -Wall -Wextra -Werror -g
 
 # Libs
+MLX = minilibx-linux/
 LIBFT_DIR = libft
 LIBFT_A = $(LIBFT_DIR)/libft.a
 INCLUDES = -I./libft
@@ -31,7 +33,8 @@ all: $(NAME)
 
 $(NAME): $(OBJS)
 	@make bonus -C ./libft
-	$(CC) $(CFLAGS) $(OBJS) ./libft/libft.a -o $(NAME)
+	@make -s -C $(MLX)
+	$(CC) $(CFLAGS) $(OBJS) ./libft/libft.a $(MLX)libmlx.a -lXext -lX11 -lm -o $(NAME)
 
 %.o: %.c
 	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
@@ -41,6 +44,7 @@ test: all
 
 clean:
 	@make clean -C ./libft
+	@make clean -s -C $(MLX)
 	rm -f $(OBJS)
 
 fclean: clean
